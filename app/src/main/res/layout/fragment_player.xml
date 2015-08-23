@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="550dp"
+    android:minWidth="550dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/lblArtist"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
+    <TextView
+        android:id="@+id/lblAlbum"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
+    <ImageView
+        android:id="@+id/imgCover"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:contentDescription="@string/cover_art" />
+
+    <TextView
+        android:id="@+id/lblTrack"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textAppearance="@android:style/TextAppearance.Material.Large" />
+
+    <SeekBar
+        android:id="@+id/seekTrack"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp">
+
+        <TextView
+            android:id="@+id/lblTime"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:textAppearance="@android:style/TextAppearance.Material.Small" />
+
+        <TextView
+            android:id="@+id/lblDuration"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:textAppearance="@android:style/TextAppearance.Material.Small" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/btnPrevious"
+                style="@style/PlayerButtons"
+                android:contentDescription="@string/btn_previous"
+                android:src="@android:drawable/ic_media_previous" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/btnPlay"
+                style="@style/PlayerButtons"
+                android:contentDescription="@string/btn_play"
+                android:src="@android:drawable/ic_media_play" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/btnNext"
+                style="@style/PlayerButtons"
+                android:contentDescription="@string/btn_next"
+                android:src="@android:drawable/ic_media_next" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>
