@@ -32,6 +32,7 @@ import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Tracks;
+import retrofit.RetrofitError;
 
 
 public class MainFragment extends Fragment {
@@ -146,7 +147,11 @@ public class MainFragment extends Fragment {
             HashMap<String, Object> queryMap = new HashMap<>();
             queryMap.put("limit", "10");
 
-            return spotify.searchArtists(strings[0], queryMap);
+            try {
+                return spotify.searchArtists(strings[0], queryMap);
+            } catch (RetrofitError ex) {
+                return null;
+            }
         }
 
         @Override
@@ -156,21 +161,27 @@ public class MainFragment extends Fragment {
             } else {
                 arrayOfArtists = new ArrayList<>();
             }
-            if (artistsPager.artists.items.size() > 0) {
-                for (int i = 0; i < artistsPager.artists.items.size(); i++) {
-                    Artist artist = artistsPager.artists.items.get(i);
 
-                    ArtistObject objArtist = new ArtistObject(artist.id, artist.name, (artist.images.size() == 0) ? "" : artist.images.get(artist.images.size() - 1).url);
+            if (artistsPager != null) {
+                if (artistsPager.artists.items.size() > 0) {
+                    for (int i = 0; i < artistsPager.artists.items.size(); i++) {
+                        Artist artist = artistsPager.artists.items.get(i);
 
-                    arrayOfArtists.add(objArtist);
+                        ArtistObject objArtist = new ArtistObject(artist.id, artist.name, (artist.images.size() == 0) ? "" : artist.images.get(artist.images.size() - 1).url);
+
+                        arrayOfArtists.add(objArtist);
+                    }
+
+                    ArtistsAdapter adapter = new ArtistsAdapter(getActivity().getApplicationContext(), arrayOfArtists);
+                    lstArtists.setAdapter(adapter);
+                } else {
+
+                    lstArtists.setAdapter(null);
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.search_error, Toast.LENGTH_SHORT).show();
                 }
-
-                ArtistsAdapter adapter = new ArtistsAdapter(getActivity().getApplicationContext(), arrayOfArtists);
-                lstArtists.setAdapter(adapter);
             } else {
-
                 lstArtists.setAdapter(null);
-                Toast.makeText(getActivity().getApplicationContext(), R.string.search_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), R.string.connection_error, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -186,27 +197,35 @@ public class MainFragment extends Fragment {
 
             SpotifyApi api = new SpotifyApi();
             SpotifyService spotify = api.getService();
-            return spotify.getArtistTopTrack(objArtist.Id, "US");
+
+            try {
+                return spotify.getArtistTopTrack(objArtist.Id, "US");
+            } catch (RetrofitError ex) {
+                return null;
+            }
         }
 
         @Override
         protected void onPostExecute(Tracks topTracks) {
+            if (topTracks != null) {
+                if (topTracks.tracks.size() > 0) {
+                    ArrayList<TrackObject> arrayOfTracks = new ArrayList<>();
+                    for (int i = 0; i < topTracks.tracks.size(); i++) {
+                        Track track = topTracks.tracks.get(i);
+                        TrackObject objTrack = new TrackObject(track.id, track.name, objArtist.Name, track.album.name, (long) 30000, (track.album.images.size() == 0) ? "" : track.album.images.get(track.album.images.size() - 1).url, track.album.images.get(0).url, track.preview_url);
+                        arrayOfTracks.add(objTrack);
+                    }
 
-            if (topTracks.tracks.size() > 0) {
-                ArrayList<TrackObject> arrayOfTracks = new ArrayList<>();
-                for (int i = 0; i < topTracks.tracks.size(); i++) {
-                    Track track = topTracks.tracks.get(i);
-                    TrackObject objTrack = new TrackObject(track.id, track.name, objArtist.Name, track.album.name, (long)30000,  (track.album.images.size() == 0) ? "" : track.album.images.get(track.album.images.size() - 1).url, track.album.images.get(0).url, track.preview_url);
-                    arrayOfTracks.add(objTrack);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.content_fragment, ArtistFragment.newInstance(objArtist, arrayOfTracks))
+                            .addToBackStack(null)
+                            .commit();
+
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.search_error_2, Toast.LENGTH_SHORT).show();
                 }
-
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.content_fragment, ArtistFragment.newInstance(objArtist, arrayOfTracks))
-                        .addToBackStack(null)
-                        .commit();
-
             } else {
-                Toast.makeText(getActivity().getApplicationContext(), R.string.search_error_2, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), R.string.connection_error, Toast.LENGTH_SHORT).show();
             }
         }
     }
